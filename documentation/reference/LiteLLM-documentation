@@ -1,0 +1,500 @@
+LiteLLM - Getting Started
+https://github.com/BerriAI/litellm
+
+Call 100+ LLMs using the OpenAI Input/Output Format
+Translate inputs to provider's completion, embedding, and image_generation endpoints
+Consistent output, text responses will always be available at ['choices'][0]['message']['content']
+Retry/fallback logic across multiple deployments (e.g. Azure/OpenAI) - Router
+Track spend & set budgets per project LiteLLM Proxy Server
+How to use LiteLLM
+You can use litellm through either:
+
+LiteLLM Proxy Server - Server (LLM Gateway) to call 100+ LLMs, load balance, cost tracking across projects
+LiteLLM python SDK - Python Client to call 100+ LLMs, load balance, cost tracking
+When to use LiteLLM Proxy Server (LLM Gateway)
+tip
+Use LiteLLM Proxy Server if you want a central service (LLM Gateway) to access multiple LLMs
+
+Typically used by Gen AI Enablement / ML PLatform Teams
+
+LiteLLM Proxy gives you a unified interface to access multiple LLMs (100+ LLMs)
+Track LLM Usage and setup guardrails
+Customize Logging, Guardrails, Caching per project
+When to use LiteLLM Python SDK
+tip
+Use LiteLLM Python SDK if you want to use LiteLLM in your python code
+
+Typically used by developers building llm projects
+
+LiteLLM SDK gives you a unified interface to access multiple LLMs (100+ LLMs)
+Retry/fallback logic across multiple deployments (e.g. Azure/OpenAI) - Router
+LiteLLM Python SDK
+Basic usage
+Open In Colab
+pip install litellm
+
+OpenAI
+Anthropic
+xAI
+VertexAI
+NVIDIA
+HuggingFace
+Azure OpenAI
+Ollama
+Openrouter
+from litellm import completion
+import os
+
+## set ENV variables
+os.environ["OPENAI_API_KEY"] = "your-api-key"
+
+response = completion(
+  model="openai/gpt-4o",
+  messages=[{ "content": "Hello, how are you?","role": "user"}]
+)
+
+Response Format (OpenAI Format)
+{
+    "id": "chatcmpl-565d891b-a42e-4c39-8d14-82a1f5208885",
+    "created": 1734366691,
+    "model": "claude-3-sonnet-20240229",
+    "object": "chat.completion",
+    "system_fingerprint": null,
+    "choices": [
+        {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+                "content": "Hello! As an AI language model, I don't have feelings, but I'm operating properly and ready to assist you with any questions or tasks you may have. How can I help you today?",
+                "role": "assistant",
+                "tool_calls": null,
+                "function_call": null
+            }
+        }
+    ],
+    "usage": {
+        "completion_tokens": 43,
+        "prompt_tokens": 13,
+        "total_tokens": 56,
+        "completion_tokens_details": null,
+        "prompt_tokens_details": {
+            "audio_tokens": null,
+            "cached_tokens": 0
+        },
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0
+    }
+}
+
+
+Streaming
+Set stream=True in the completion args.
+
+OpenAI
+Anthropic
+xAI
+VertexAI
+NVIDIA
+HuggingFace
+Azure OpenAI
+Ollama
+Openrouter
+from litellm import completion
+import os
+
+## set ENV variables
+os.environ["OPENAI_API_KEY"] = "your-api-key"
+
+response = completion(
+  model="openai/gpt-4o",
+  messages=[{ "content": "Hello, how are you?","role": "user"}],
+  stream=True,
+)
+
+Streaming Response Format (OpenAI Format)
+{
+    "id": "chatcmpl-2be06597-eb60-4c70-9ec5-8cd2ab1b4697",
+    "created": 1734366925,
+    "model": "claude-3-sonnet-20240229",
+    "object": "chat.completion.chunk",
+    "system_fingerprint": null,
+    "choices": [
+        {
+            "finish_reason": null,
+            "index": 0,
+            "delta": {
+                "content": "Hello",
+                "role": "assistant",
+                "function_call": null,
+                "tool_calls": null,
+                "audio": null
+            },
+            "logprobs": null
+        }
+    ]
+}
+
+Exception handling
+LiteLLM maps exceptions across all supported providers to the OpenAI exceptions. All our exceptions inherit from OpenAI's exception types, so any error-handling you have for that, should work out of the box with LiteLLM.
+
+from openai.error import OpenAIError
+from litellm import completion
+
+os.environ["ANTHROPIC_API_KEY"] = "bad-key"
+try:
+    # some code
+    completion(model="claude-instant-1", messages=[{"role": "user", "content": "Hey, how's it going?"}])
+except OpenAIError as e:
+    print(e)
+
+
+Logging Observability - Log LLM Input/Output (Docs)
+LiteLLM exposes pre defined callbacks to send data to Lunary, MLflow, Langfuse, Helicone, Promptlayer, Traceloop, Slack
+
+from litellm import completion
+
+## set env variables for logging tools (API key set up is not required when using MLflow)
+os.environ["LUNARY_PUBLIC_KEY"] = "your-lunary-public-key" # get your public key at https://app.lunary.ai/settings
+os.environ["HELICONE_API_KEY"] = "your-helicone-key"
+os.environ["LANGFUSE_PUBLIC_KEY"] = ""
+os.environ["LANGFUSE_SECRET_KEY"] = ""
+
+os.environ["OPENAI_API_KEY"]
+
+# set callbacks
+litellm.success_callback = ["lunary", "mlflow", "langfuse", "helicone"] # log input/output to lunary, mlflow, langfuse, helicone
+
+#openai call
+response = completion(model="gpt-3.5-turbo", messages=[{"role": "user", "content": "Hi 👋 - i'm openai"}])
+
+
+Track Costs, Usage, Latency for streaming
+Use a callback function for this - more info on custom callbacks: https://docs.litellm.ai/docs/observability/custom_callback
+
+import litellm
+
+# track_cost_callback
+def track_cost_callback(
+    kwargs,                 # kwargs to completion
+    completion_response,    # response from completion
+    start_time, end_time    # start/end time
+):
+    try:
+      response_cost = kwargs.get("response_cost", 0)
+      print("streaming response_cost", response_cost)
+    except:
+        pass
+# set callback
+litellm.success_callback = [track_cost_callback] # set custom callback function
+
+# litellm.completion() call
+response = completion(
+    model="gpt-3.5-turbo",
+    messages=[
+        {
+            "role": "user",
+            "content": "Hi 👋 - i'm openai"
+        }
+    ],
+    stream=True
+)
+
+LiteLLM Proxy Server (LLM Gateway)
+Track spend across multiple projects/people
+
+ui_3
+
+The proxy provides:
+
+Hooks for auth
+Hooks for logging
+Cost tracking
+Rate Limiting
+📖 Proxy Endpoints - Swagger Docs
+Go here for a complete tutorial with keys + rate limits - here
+
+Quick Start Proxy - CLI
+pip install 'litellm[proxy]'
+
+Step 1: Start litellm proxy
+pip package
+Docker container
+$ litellm --model huggingface/bigcode/starcoder
+
+#INFO: Proxy running on http://0.0.0.0:4000
+
+Step 2: Make ChatCompletions Request to Proxy
+import openai # openai v1.0.0+
+client = openai.OpenAI(api_key="anything",base_url="http://0.0.0.0:4000") # set proxy to base_url
+# request sent to model set on litellm proxy, `litellm --model`
+response = client.chat.completions.create(model="gpt-3.5-turbo", messages = [
+    {
+        "role": "user",
+        "content": "this is a test request, write a short poem"
+    }
+])
+
+print(response)
+
+###Run/host with docker I don't know if this is nessecary
+
+Docker, Deployment
+You can find the Dockerfile to build litellm proxy here
+
+Quick Start
+To start using Litellm, run the following commands in a shell:
+
+# Get the code
+git clone https://github.com/BerriAI/litellm
+
+# Go to folder
+cd litellm
+
+# Add the master key - you can change this after setup
+echo 'LITELLM_MASTER_KEY="sk-1234"' > .env
+
+# Add the litellm salt key - you cannot change this after adding a model
+# It is used to encrypt / decrypt your LLM API Key credentials
+# We recommned - https://1password.com/password-generator/ 
+# password generator to get a random hash for litellm salt key
+echo 'LITELLM_SALT_KEY="sk-1234"' >> .env
+
+source .env
+
+# Start
+docker-compose up
+
+Docker Run
+Step 1. CREATE config.yaml
+Example litellm_config.yaml
+
+model_list:
+  - model_name: azure-gpt-3.5
+    litellm_params:
+      model: azure/<your-azure-model-deployment>
+      api_base: os.environ/AZURE_API_BASE # runs os.getenv("AZURE_API_BASE")
+      api_key: os.environ/AZURE_API_KEY # runs os.getenv("AZURE_API_KEY")
+      api_version: "2023-07-01-preview"
+
+Step 2. RUN Docker Image
+docker run \
+    -v $(pwd)/litellm_config.yaml:/app/config.yaml \
+    -e AZURE_API_KEY=d6*********** \
+    -e AZURE_API_BASE=https://openai-***********/ \
+    -p 4000:4000 \
+    ghcr.io/berriai/litellm:main-latest \
+    --config /app/config.yaml --detailed_debug
+
+Get Latest Image 👉 here
+
+Step 3. TEST Request
+Pass model=azure-gpt-3.5 this was set on step 1
+
+curl --location 'http://0.0.0.0:4000/chat/completions' \
+    --header 'Content-Type: application/json' \
+    --data '{
+    "model": "azure-gpt-3.5",
+    "messages": [
+        {
+        "role": "user",
+        "content": "what llm are you"
+        }
+    ]
+}'
+
+Docker Run - CLI Args
+See all supported CLI args here:
+
+Here's how you can run the docker image and pass your config to litellm
+
+docker run ghcr.io/berriai/litellm:main-latest --config your_config.yaml
+
+Here's how you can run the docker image and start litellm on port 8002 with num_workers=8
+
+docker run ghcr.io/berriai/litellm:main-latest --port 8002 --num_workers 8
+
+Use litellm as a base image
+# Use the provided base image
+FROM ghcr.io/berriai/litellm:main-latest
+
+# Set the working directory to /app
+WORKDIR /app
+
+# Copy the configuration file into the container at /app
+COPY config.yaml .
+
+# Make sure your docker/entrypoint.sh is executable
+RUN chmod +x ./docker/entrypoint.sh
+
+# Expose the necessary port
+EXPOSE 4000/tcp
+
+# Override the CMD instruction with your desired command and arguments
+# WARNING: FOR PROD DO NOT USE `--detailed_debug` it slows down response times, instead use the following CMD
+# CMD ["--port", "4000", "--config", "config.yaml"]
+
+CMD ["--port", "4000", "--config", "config.yaml", "--detailed_debug"]
+
+
+Build from litellm pip package
+Follow these instructons to build a docker container from the litellm pip package. If your company has a strict requirement around security / building images you can follow these steps.
+
+Dockerfile
+
+FROM cgr.dev/chainguard/python:latest-dev
+
+USER root
+WORKDIR /app
+
+ENV HOME=/home/litellm
+ENV PATH="${HOME}/venv/bin:$PATH"
+
+# Install runtime dependencies
+RUN apk update && \
+    apk add --no-cache gcc python3-dev openssl openssl-dev
+
+RUN python -m venv ${HOME}/venv
+RUN ${HOME}/venv/bin/pip install --no-cache-dir --upgrade pip
+
+COPY requirements.txt .
+RUN --mount=type=cache,target=${HOME}/.cache/pip \
+    ${HOME}/venv/bin/pip install -r requirements.txt
+
+EXPOSE 4000/tcp
+
+ENTRYPOINT ["litellm"]
+CMD ["--port", "4000"]
+
+Example requirements.txt
+
+litellm[proxy]==1.57.3 # Specify the litellm version you want to use
+prometheus_client
+langfuse
+prisma
+
+Build the docker image
+
+docker build \
+  -f Dockerfile.build_from_pip \
+  -t litellm-proxy-with-pip-5 .
+
+Run the docker image
+
+docker run \
+    -v $(pwd)/litellm_config.yaml:/app/config.yaml \
+    -e OPENAI_API_KEY="sk-1222" \
+    -e DATABASE_URL="postgresql://xxxxxxxxx \
+    -p 4000:4000 \
+    litellm-proxy-with-pip-5 \
+    --config /app/config.yaml --detailed_debug
+
+Terraform
+s/o Nicholas Cecere for his LiteLLM User Management Terraform
+
+👉 Go here for Terraform
+
+Kubernetes
+Deploying a config file based litellm instance just requires a simple deployment that loads the config.yaml file via a config map. Also it would be a good practice to use the env var declaration for api keys, and attach the env vars with the api key values as an opaque secret.
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: litellm-config-file
+data:
+  config.yaml: |
+      model_list: 
+        - model_name: gpt-3.5-turbo
+          litellm_params:
+            model: azure/gpt-turbo-small-ca
+            api_base: https://my-endpoint-canada-berri992.openai.azure.com/
+            api_key: os.environ/CA_AZURE_OPENAI_API_KEY
+---
+apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  name: litellm-secrets
+data:
+  CA_AZURE_OPENAI_API_KEY: bWVvd19pbV9hX2NhdA== # your api key in base64
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: litellm-deployment
+  labels:
+    app: litellm
+spec:
+  selector:
+    matchLabels:
+      app: litellm
+  template:
+    metadata:
+      labels:
+        app: litellm
+    spec:
+      containers:
+      - name: litellm
+        image: ghcr.io/berriai/litellm:main-latest # it is recommended to fix a version generally
+        ports:
+        - containerPort: 4000
+        volumeMounts:
+        - name: config-volume
+          mountPath: /app/proxy_server_config.yaml
+          subPath: config.yaml
+        envFrom:
+        - secretRef:
+            name: litellm-secrets
+      volumes:
+        - name: config-volume
+          configMap:
+            name: litellm-config-file
+
+info
+To avoid issues with predictability, difficulties in rollback, and inconsistent environments, use versioning or SHA digests (for example, litellm:main-v1.30.3 or litellm@sha256:12345abcdef...) instead of litellm:main-latest.
+
+Helm Chart
+info
+[BETA] Helm Chart is BETA. If you run into an issues/have feedback please let us know https://github.com/BerriAI/litellm/issues
+
+Use this when you want to use litellm helm chart as a dependency for other charts. The litellm-helm OCI is hosted here https://github.com/BerriAI/litellm/pkgs/container/litellm-helm
+
+Step 1. Pull the litellm helm chart
+helm pull oci://ghcr.io/berriai/litellm-helm
+
+# Pulled: ghcr.io/berriai/litellm-helm:0.1.2
+# Digest: sha256:7d3ded1c99c1597f9ad4dc49d84327cf1db6e0faa0eeea0c614be5526ae94e2a
+
+Step 2. Unzip litellm helm
+Unzip the specific version that was pulled in Step 1
+
+tar -zxvf litellm-helm-0.1.2.tgz
+
+Step 3. Install litellm helm
+helm install lite-helm ./litellm-helm
+
+Step 4. Expose the service to localhost
+kubectl --namespace default port-forward $POD_NAME 8080:$CONTAINER_PORT
+
+Your LiteLLM Proxy Server is now running on http://127.0.0.1:4000.
+
+That's it ! That's the quick start to deploy litellm
+
+Make LLM API Requests
+info
+💡 Go here 👉 to make your first LLM API Request
+
+LiteLLM is compatible with several SDKs - including OpenAI SDK, Anthropic SDK, Mistral SDK, LLamaIndex, Langchain (Js, Python)
+
+Deployment Options
+Docs	When to Use
+Quick Start	call 100+ LLMs + Load Balancing
+Deploy with Database	+ use Virtual Keys + Track Spend (Note: When deploying with a database providing a DATABASE_URL and LITELLM_MASTER_KEY are required in your env )
+LiteLLM container + Redis	+ load balance across multiple litellm containers
+LiteLLM Database container + PostgresDB + Redis	+ use Virtual Keys + Track Spend + load balance across multiple litellm containers
+Deploy with Database
+Docker, Kubernetes, Helm Chart
+Requirements:
+
+Need a postgres database (e.g. Supabase, Neon, etc) Set DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/<dbname> in your env
+Set a LITELLM_MASTER_KEY, this is your Proxy Admin key - you can use this to create other keys (🚨 must start with sk-)
+

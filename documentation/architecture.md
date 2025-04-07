@@ -1,15 +1,24 @@
 # Inventhor - Architecture Documentation
 
+## Overview
+This is a React application built with TypeScript and Vite. It follows the Google TypeScript Style Guide and uses Material UI for components. Inventhor is based on the mui-cursor-boilerplate repository but customized for specific needs.
+
 ## Project Structure
 
 ```
 inventhor/
-├── public/             # Static assets
-├── src/                # Source code
-├── docs/               # Original boilerplate documentation
 ├── documentation/      # Project documentation
 │   ├── architecture.md # This file
-│   └── changelog.md    # Record of changes
+│   ├── changelog.md    # Record of changes
+│   └── reference/      # Reference docs from original boilerplate
+├── public/             # Static assets
+├── src/                # Source code
+│   ├── assets/         # Images, fonts, and other static assets
+│   ├── components/     # Reusable React components
+│   ├── theme/          # MUI theme configuration
+│   ├── App.tsx         # Main application component
+│   ├── main.tsx        # Application entry point
+│   └── vite-env.d.ts   # TypeScript declarations for Vite
 ├── node_modules/       # Dependencies (git-ignored)
 ├── .gitignore          # Git ignore file
 ├── .prettierrc         # Prettier configuration
@@ -42,6 +51,16 @@ The application structure follows a standard React+TypeScript+Vite project with 
 - Material UI for consistent and responsive UI components
 - Vite for fast development experience and optimized builds
 - ESLint and Prettier for code quality and formatting
+
+## Styling
+The application uses Material UI for styling, which is based on Emotion (CSS-in-JS). The theme is customizable in the `src/theme` directory.
+
+## Best Practices
+- Follow the Google TypeScript Style Guide
+- Use functional components with hooks
+- Keep components small and focused on a single responsibility
+- Use TypeScript interfaces for props and state
+- Use ESLint and Prettier for code quality
 
 ## Architectural Patterns
 
