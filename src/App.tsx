@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { ThemeProvider } from '@mui/material/styles';
-import { CssBaseline, Container, Box, Typography, Button, Paper } from '@mui/material';
+import { CssBaseline, Container, Box, Typography, Button, Paper, Divider } from '@mui/material';
 import theme from './theme';
 import Header from './components/Header';
+import ChatComponent from './components/ChatComponent';
 
 /**
  * Main application component.
@@ -14,16 +15,25 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Header title="MUI Cursor Boilerplate" />
+      <Header title="Inventhor" />
       <Container maxWidth="md">
         <Box sx={{ my: 4 }}>
+          {/* AI Chat Integration */}
+          <Typography variant="h4" component="h1" gutterBottom>
+            Inventhor AI Assistant
+          </Typography>
+          
+          {/* Custom chat component */}
+          <ChatComponent />
+          
+          <Divider sx={{ my: 4 }} />
+          
           <Paper elevation={3} sx={{ p: 3, textAlign: 'center' }}>
-            <Typography variant="h4" component="h1" gutterBottom>
-              Welcome to Your MUI Application
+            <Typography variant="h5" component="h2" gutterBottom>
+              About Inventhor
             </Typography>
             <Typography variant="body1" paragraph>
-              This is a boilerplate for React applications using TypeScript, Vite, and Material UI.
-              It follows the Google TypeScript Style Guide and includes ESLint and Prettier for code quality.
+              Inventhor helps you innovate faster with AI-powered assistance.
             </Typography>
             <Button 
               variant="contained" 
