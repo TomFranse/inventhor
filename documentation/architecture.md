@@ -16,7 +16,8 @@ inventhor/
 │   ├── assets/         # Images, fonts, and other static assets
 │   ├── components/     # Reusable React components
 │   │   ├── Header.tsx  # Application header component
-│   │   └── ChatComponent.tsx # Custom AI chat implementation
+│   │   ├── ChatComponent.tsx # Custom AI chat implementation with direct OpenAI API integration
+│   │   └── UserInstructionsForm.tsx # Form for custom AI instructions
 │   ├── theme/          # MUI theme configuration
 │   ├── firebase-config.ts # Firebase configuration
 │   ├── App.tsx         # Main application component
@@ -44,7 +45,7 @@ inventhor/
 - **UI Library**: Material UI 6
 - **Build Tool**: Vite
 - **Language**: TypeScript
-- **AI Integration**: ai-chat-base (using useChat hook)
+- **AI Integration**: Direct OpenAI API integration
 - **Database/Storage**: Firebase Firestore (optional)
 - **State Management**: React Hooks
 - **Error Handling**: Centralized with Material UI components
@@ -59,7 +60,7 @@ The application structure follows a standard React+TypeScript+Vite project with 
 - Material UI for consistent and responsive UI components
 - Vite for fast development experience and optimized builds
 - ESLint and Prettier for code quality and formatting
-- ai-chat-base for AI chat integration (using the useChat hook)
+- Direct OpenAI API integration using fetch
 - Firebase for conversation persistence with robust error handling
 - Material UI Alert and Snackbar for user notifications and error feedback
 
@@ -68,6 +69,9 @@ The application structure follows a standard React+TypeScript+Vite project with 
 The application integrates a custom AI chat component at the top of the main page:
 
 - **ChatComponent**: A direct integration with the OpenAI API
+  - Custom implementation with real OpenAI API calls
+  - No dependency on third-party chat packages for core functionality
+  - Full control over request and response handling
 - Features include:
   - Custom Material UI styling for chat bubbles and interface
   - User and AI message display with timestamps

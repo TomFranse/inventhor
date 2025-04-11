@@ -79,12 +79,12 @@ const ChatComponent: React.FC = () => {
   // Generate a temporary user ID (in a real app, this would come from authentication)
   const userId = 'user-' + (firebaseEnabled ? import.meta.env.VITE_FIREBASE_PROJECT_ID : 'local');
   
-  // Debug logs for troubleshooting
-  console.log("API Key exists:", !!apiKey);
-  console.log("API Key valid:", isApiKeyValid);
-  console.log("API Key format:", apiKey?.substring(0, 12) + "...");
-  console.log("Project ID:", projectId);
-  console.log("Firebase enabled:", firebaseEnabled);
+  // Debug logs only in development
+  if (import.meta.env.DEV) {
+    console.log("API Key valid:", isApiKeyValid);
+    console.log("API Key format:", apiKey?.substring(0, 12) + "...");
+    console.log("Firebase enabled:", firebaseEnabled);
+  }
   
   // Handle API key validation on component mount
   useEffect(() => {
@@ -136,21 +136,18 @@ const ChatComponent: React.FC = () => {
         { role: "user", content: userMessage }
       ];
       
-      // Prepare headers - we should NOT include organization header for project-based or service account API keys
-      const headers = {
+      // Prepare headers based on API key type
+      const headers: Record<string, string> = {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${apiKey}`
       };
       
-      // Only add the OpenAI-Organization header if using a standard API key 
-      // Project-based keys (sk-proj-) and service account keys (sk-svcacct-) already have the org info embedded
+      // Only add the OpenAI-Organization header if using a standard API key
+      // Special keys (project-based, service account) already have org info embedded
       const isSpecialKey = apiKey?.startsWith('sk-proj-') || apiKey?.startsWith('sk-svcacct-');
       if (projectId && !isSpecialKey) {
-        console.log("Adding organization header for standard API key");
         headers['OpenAI-Organization'] = projectId;
       }
-      
-      console.log("Using headers:", JSON.stringify(headers, null, 2).replace(apiKey || "", "[REDACTED]"));
       
       // Call OpenAI API
       const response = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -539,9 +536,8 @@ const ChatComponent: React.FC = () => {
                   return (
                     <ListItem
                       key={conv.id}
-                      button
-                      onClick={() => handleOpenConversation(conv.id)}
                       divider
+                      onClick={() => handleOpenConversation(conv.id)}
                     >
                       <ListItemText 
                         primary={firstMessage.substring(0, 60) + (firstMessage.length > 60 ? '...' : '')} 
