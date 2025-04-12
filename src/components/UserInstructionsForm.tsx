@@ -77,9 +77,7 @@ const UserInstructionsForm: React.FC<UserInstructionsFormProps> = ({
       elevation={1} 
       sx={{ 
         p: 2, 
-        mb: 2,
-        border: '1px solid',
-        borderColor: 'divider'
+        mb: 2
       }}
     >
       <Box 

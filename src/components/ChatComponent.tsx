@@ -18,7 +18,8 @@ import {
   DialogContent,
   DialogActions,
   List,
-  ListItem
+  ListItem,
+  useTheme
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import HistoryIcon from '@mui/icons-material/History';
@@ -48,6 +49,7 @@ interface Message {
  * @returns A React component containing a custom chat interface
  */
 const ChatComponent: React.FC = () => {
+  const theme = useTheme();
   const [inputValue, setInputValue] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
@@ -295,271 +297,234 @@ const ChatComponent: React.FC = () => {
           onInstructionsChange={handleInstructionsChange} 
         />
       )}
+
+      {/* Error banner */}
+      {error && (
+        <Alert severity="error" sx={{ mb: 2 }} onClose={() => setError(null)}>
+          {error}
+        </Alert>
+      )}
       
-      {/* Chat container */}
       <Paper 
-        elevation={3} 
+        elevation={0} 
         sx={{ 
-          width: '100%',
-          mb: 3,
-          borderRadius: 2,
-          overflow: 'hidden'
+          overflow: 'hidden',
+          height: 400,
+          display: 'flex',
+          flexDirection: 'column',
+          backgroundColor: theme.palette.background.paper
         }}
       >
+        {/* Menu button */}
         <Box sx={{ 
-          height: '500px',
-          display: 'flex',
-          flexDirection: 'column'
+          display: 'flex', 
+          justifyContent: 'flex-end', 
+          p: 1
         }}>
-          {/* Chat header */}
-          <Box sx={{ 
-            padding: '12px 20px',
-            borderBottom: '1px solid #e0e0e0',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            bgcolor: (theme) => theme.palette.primary.main,
-            color: 'white'
-          }}>
-            <Typography variant="h6">Inventhor AI Assistant</Typography>
-            <Box sx={{ display: 'flex', gap: 1 }}>
-              <Button 
-                variant="outlined" 
-                size="small" 
-                color="inherit"
-                onClick={handleNewChat}
-              >
-                New Chat
-              </Button>
-              
-              {firebaseEnabled && (
-                <IconButton 
-                  color="inherit"
-                  size="small"
-                  onClick={handleMenuOpen}
-                >
-                  <MoreVertIcon />
-                </IconButton>
-              )}
-            </Box>
-          </Box>
-          
-          {/* Error banner */}
-          {error && (
-            <Alert 
-              severity="error" 
-              sx={{ borderRadius: 0 }}
-              action={
-                <IconButton
-                  aria-label="close"
-                  color="inherit"
-                  size="small"
-                  onClick={() => setError(null)}
-                >
-                  <CloseIcon fontSize="inherit" />
-                </IconButton>
-              }
-            >
-              {error}
-            </Alert>
-          )}
-          
-          {/* Messages area */}
-          <Box sx={{ 
-            flex: 1, 
-            overflowY: 'auto', 
-            padding: '16px',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '12px',
-            bgcolor: '#f9f9f9'
-          }}>
-            {/* Welcome message if no messages and no error */}
-            {messages.length === 0 && !error && (
-              <Box sx={{ 
-                padding: '20px', 
-                textAlign: 'center',
-                color: 'text.secondary',
-                mt: 2
-              }}>
-                <Typography variant="body1">
-                  Welcome to Inventhor! Ask me anything to get started.
-                </Typography>
-                {firebaseEnabled && (
-                  <Typography variant="caption" sx={{ display: 'block', mt: 1, color: 'success.main' }}>
-                    Conversation persistence is enabled via Firebase
-                  </Typography>
-                )}
-                {userInstructions && (
-                  <Typography variant="caption" sx={{ display: 'block', mt: 1, color: 'info.main' }}>
-                    Custom instructions are active
-                  </Typography>
-                )}
-              </Box>
-            )}
-            
-            {/* Message bubbles */}
-            {messages.map((msg) => (
-              <Box 
-                key={msg.id} 
-                sx={{
-                  padding: '12px 16px',
-                  maxWidth: '80%',
-                  alignSelf: msg.role === 'user' ? 'flex-end' : 'flex-start',
-                  bgcolor: msg.role === 'user' ? '#e3f2fd' : 'white',
-                  borderRadius: '12px',
-                  boxShadow: '0 1px 2px rgba(0,0,0,0.1)',
-                  borderTopRightRadius: msg.role === 'user' ? 0 : '12px',
-                  borderTopLeftRadius: msg.role === 'user' ? '12px' : 0,
-                }}
-              >
-                <Typography variant="body1">
-                  {msg.content}
-                </Typography>
-                <Typography 
-                  variant="caption" 
-                  sx={{ 
-                    display: 'block', 
-                    mt: 0.5, 
-                    textAlign: msg.role === 'user' ? 'right' : 'left',
-                    color: 'text.secondary'
-                  }}
-                >
-                  {msg.role === 'user' ? 'You' : 'AI'} • {new Date(msg.timestamp).toLocaleTimeString()}
-                </Typography>
-              </Box>
-            ))}
-            
-            {/* Loading indicator */}
-            {isLoading && (
-              <Box sx={{ 
-                padding: '12px 16px',
-                maxWidth: '80%',
-                alignSelf: 'flex-start',
-                bgcolor: 'white',
-                borderRadius: '12px',
-                boxShadow: '0 1px 2px rgba(0,0,0,0.1)',
-                borderTopLeftRadius: 0,
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1
-              }}>
-                <CircularProgress size={16} />
-                <Typography variant="body2">Thinking...</Typography>
-              </Box>
-            )}
-          </Box>
-          
-          {/* Input area */}
-          <Box sx={{ 
-            display: 'flex', 
-            padding: '12px 16px',
-            borderTop: '1px solid #e0e0e0',
-            bgcolor: 'white'
-          }}>
-            <TextField
-              fullWidth
-              variant="outlined"
-              size="small"
-              placeholder={isApiKeyValid ? "Type your message..." : "API key not configured"}
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              onKeyPress={handleKeyPress}
-              multiline
-              maxRows={3}
-              sx={{ mr: 1 }}
-              disabled={!isApiKeyValid || isLoading}
-            />
-            <Button 
-              variant="contained" 
-              color="primary"
-              onClick={handleSend}
-              disabled={!isApiKeyValid || isLoading || inputValue.trim() === ''}
-              sx={{ minWidth: '100px' }}
-            >
-              {isLoading ? 'Sending...' : 'Send'}
-            </Button>
-          </Box>
+          <IconButton 
+            size="small" 
+            aria-label="menu"
+            onClick={handleMenuOpen}
+          >
+            <MoreVertIcon />
+          </IconButton>
         </Box>
         
-        {/* Status notifications */}
-        <Snackbar
-          open={isSnackbarOpen}
-          autoHideDuration={6000}
-          onClose={handleSnackbarClose}
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-          message={snackbarMessage}
-          action={
-            <IconButton
-              size="small"
-              color="inherit"
-              onClick={handleSnackbarClose}
-            >
-              <CloseIcon fontSize="small" />
-            </IconButton>
-          }
-        />
-        
-        {/* Menu for additional options */}
-        <Menu
-          anchorEl={menuAnchorEl}
-          open={Boolean(menuAnchorEl)}
-          onClose={handleMenuClose}
-        >
-          <MenuItem onClick={handleHistoryClick}>
-            <ListItemIcon>
-              <HistoryIcon fontSize="small" />
-            </ListItemIcon>
-            <ListItemText>Conversation History</ListItemText>
-          </MenuItem>
-        </Menu>
-        
-        {/* Conversation History Dialog */}
-        <Dialog
-          open={isHistoryDialogOpen}
-          onClose={() => setIsHistoryDialogOpen(false)}
-          maxWidth="sm"
-          fullWidth
-        >
-          <DialogTitle>Conversation History</DialogTitle>
-          <DialogContent dividers>
-            {isLoadingHistory ? (
-              <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
-                <CircularProgress />
-              </Box>
-            ) : recentConversations.length > 0 ? (
-              <List>
-                {recentConversations.map((conv) => {
-                  const firstMessage = conv.messages?.[0]?.content || 'Empty conversation';
-                  const date = conv.updatedAt ? new Date(conv.updatedAt.seconds * 1000).toLocaleString() : 'Unknown date';
-                  
-                  return (
-                    <ListItem
-                      key={conv.id}
-                      divider
-                      onClick={() => handleOpenConversation(conv.id)}
-                    >
-                      <ListItemText 
-                        primary={firstMessage.substring(0, 60) + (firstMessage.length > 60 ? '...' : '')} 
-                        secondary={date}
-                      />
-                    </ListItem>
-                  );
-                })}
-              </List>
-            ) : (
-              <Typography sx={{ p: 2, textAlign: 'center', color: 'text.secondary' }}>
-                No conversation history found
+        {/* Messages container */}
+        <Box sx={{ 
+          flex: 1, 
+          overflowY: 'auto', 
+          padding: '16px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '12px',
+          bgcolor: theme.palette.background.default
+        }}>
+          {/* Welcome message if no messages and no error */}
+          {messages.length === 0 && !error && (
+            <Box sx={{ 
+              padding: '20px', 
+              textAlign: 'center',
+              color: 'text.secondary',
+              mt: 2
+            }}>
+              <Typography variant="body1">
+                Welcome to Inventhor! Ask me anything to get started.
               </Typography>
-            )}
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setIsHistoryDialogOpen(false)}>
-              Close
-            </Button>
-          </DialogActions>
-        </Dialog>
+              {firebaseEnabled && (
+                <Typography variant="caption" sx={{ display: 'block', mt: 1, color: 'success.main' }}>
+                  Conversation persistence is enabled via Firebase
+                </Typography>
+              )}
+              {userInstructions && (
+                <Typography variant="caption" sx={{ display: 'block', mt: 1, color: 'info.main' }}>
+                  Custom instructions are active
+                </Typography>
+              )}
+            </Box>
+          )}
+          
+          {/* Message bubbles */}
+          {messages.map((msg) => (
+            <Box 
+              key={msg.id} 
+              sx={{
+                padding: '12px 16px',
+                maxWidth: '80%',
+                alignSelf: msg.role === 'user' ? 'flex-end' : 'flex-start',
+                bgcolor: msg.role === 'user' ? theme.palette.primary.dark : theme.palette.background.paper,
+                color: msg.role === 'user' ? theme.palette.primary.contrastText : theme.palette.text.primary,
+                borderRadius: '12px',
+                boxShadow: 'none',
+                borderTopRightRadius: msg.role === 'user' ? 0 : '12px',
+                borderTopLeftRadius: msg.role === 'user' ? '12px' : 0,
+              }}
+            >
+              <Typography variant="body1">
+                {msg.content}
+              </Typography>
+              <Typography 
+                variant="caption" 
+                sx={{ 
+                  display: 'block', 
+                  mt: 0.5, 
+                  textAlign: msg.role === 'user' ? 'right' : 'left',
+                  color: msg.role === 'user' ? 'rgba(255,255,255,0.8)' : theme.palette.text.secondary
+                }}
+              >
+                {msg.role === 'user' ? 'You' : 'AI'} • {new Date(msg.timestamp).toLocaleTimeString()}
+              </Typography>
+            </Box>
+          ))}
+          
+          {/* Loading indicator */}
+          {isLoading && (
+            <Box sx={{ 
+              padding: '12px 16px',
+              maxWidth: '80%',
+              alignSelf: 'flex-start',
+              bgcolor: theme.palette.background.paper,
+              borderRadius: '12px',
+              boxShadow: 'none',
+              borderTopLeftRadius: 0,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1
+            }}>
+              <CircularProgress size={16} />
+              <Typography variant="body2">Thinking...</Typography>
+            </Box>
+          )}
+        </Box>
+        
+        {/* Input area */}
+        <Box sx={{ 
+          display: 'flex', 
+          padding: '12px 16px',
+          bgcolor: theme.palette.background.paper
+        }}>
+          <TextField
+            fullWidth
+            variant="outlined"
+            size="small"
+            placeholder={isApiKeyValid ? "Type your message..." : "API key not configured"}
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            onKeyPress={handleKeyPress}
+            multiline
+            maxRows={3}
+            sx={{ mr: 1 }}
+            disabled={!isApiKeyValid || isLoading}
+          />
+          <Button 
+            variant="contained" 
+            color="primary"
+            onClick={handleSend}
+            disabled={!isApiKeyValid || isLoading || inputValue.trim() === ''}
+            sx={{ minWidth: '100px' }}
+          >
+            {isLoading ? 'Sending...' : 'Send'}
+          </Button>
+        </Box>
       </Paper>
+      
+      {/* Status notifications */}
+      <Snackbar
+        open={isSnackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        message={snackbarMessage}
+        action={
+          <IconButton
+            size="small"
+            color="inherit"
+            onClick={handleSnackbarClose}
+          >
+            <CloseIcon fontSize="small" />
+          </IconButton>
+        }
+      />
+      
+      {/* Menu for additional options */}
+      <Menu
+        anchorEl={menuAnchorEl}
+        open={Boolean(menuAnchorEl)}
+        onClose={handleMenuClose}
+      >
+        <MenuItem onClick={handleHistoryClick}>
+          <ListItemIcon>
+            <HistoryIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>Conversation History</ListItemText>
+        </MenuItem>
+      </Menu>
+      
+      {/* Conversation History Dialog */}
+      <Dialog
+        open={isHistoryDialogOpen}
+        onClose={() => setIsHistoryDialogOpen(false)}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>Conversation History</DialogTitle>
+        <DialogContent dividers>
+          {isLoadingHistory ? (
+            <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
+              <CircularProgress />
+            </Box>
+          ) : recentConversations.length > 0 ? (
+            <List>
+              {recentConversations.map((conv) => {
+                const firstMessage = conv.messages?.[0]?.content || 'Empty conversation';
+                const date = conv.updatedAt ? new Date(conv.updatedAt.seconds * 1000).toLocaleString() : 'Unknown date';
+                
+                return (
+                  <ListItem
+                    key={conv.id}
+                    divider
+                    onClick={() => handleOpenConversation(conv.id)}
+                  >
+                    <ListItemText 
+                      primary={firstMessage.substring(0, 60) + (firstMessage.length > 60 ? '...' : '')} 
+                      secondary={date}
+                    />
+                  </ListItem>
+                );
+              })}
+            </List>
+          ) : (
+            <Typography sx={{ p: 2, textAlign: 'center', color: 'text.secondary' }}>
+              No conversation history found
+            </Typography>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setIsHistoryDialogOpen(false)}>
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };

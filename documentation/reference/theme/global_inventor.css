@@ -1,0 +1,75 @@
+
+:root {
+  --color-primary: #2979FF;
+  --color-secondary: #FF9100;
+  --color-bg: #121212;
+  --color-surface: #1E1E1E;
+  --color-text: #FFFFFF;
+  --color-text-secondary: rgba(255,255,255,0.7);
+  --gradient-start: #2979FF;
+  --gradient-center: #3F8EFF;
+  --gradient-end: #63A4FF;
+  --header-height: 96px;
+}
+
+/* Base Styles */
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  overflow-x: hidden;
+  font-family: 'Montserrat', sans-serif;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Hide default scrollbar when using SimpleBar */
+.simplebar-wrapper {
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+/* Scrollbar styles */
+*::-webkit-scrollbar {
+  display: none;
+}
+
+* {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* SimpleBar styling */
+.simplebar-scrollbar::before {
+  background: var(--color-primary);
+  width: 6px;
+  border-radius: 999px;
+  opacity: 0.4;
+}
+
+.simplebar-scrollbar.simplebar-visible::before {
+  opacity: 0.8;
+}
+
+.simplebar-track.simplebar-vertical .simplebar-scrollbar:before {
+  top: 0;
+  bottom: 0;
+}
+
+/* MUI Component Overrides */
+.MuiMenu-root {
+  z-index: 1300 !important;
+}
+
+.MuiMenu-paper,
+.MuiPopover-paper {
+  background-color: var(--color-surface) !important;
+  color: var(--color-text);
+}
+
+.MuiCollapse-root {
+  transition: height 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+}

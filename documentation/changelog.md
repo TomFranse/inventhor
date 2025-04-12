@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.14] - 2024-06-09
+
+### Changed
+- Removed explicit borders and outlines from all components except text inputs
+- Updated theme configuration to eliminate unwanted shadows and borders
+- Enhanced visual consistency by removing border from UserInstructionsForm
+- Removed box-shadows from chat message bubbles
+- Updated card hover effects to maintain borderless design
+- Set Paper components to elevation=0 to remove shadows
+
+## [0.1.13] - 2024-06-09
+
+### Changed
+- Harmonized all component colors with the theme palette
+- Updated FadeInImage to use theme-consistent colors
+- Changed ChatComponent to use dynamic theme colors for all UI elements
+- Replaced hardcoded hex color values with theme-based color references
+- Improved consistency of dark theme appearance across all components
+- Added useTheme hook in components for dynamic theme access
+
 ## [0.1.12] - 2024-06-09
 
 ### Changed

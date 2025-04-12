@@ -150,7 +150,7 @@ const baseThemeOptions: ThemeOptions = {
           borderRadius: 6,
           boxShadow: 'none',
           '&:hover': {
-            boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)',
+            boxShadow: 'none',
           },
         },
       },
@@ -163,12 +163,16 @@ const baseThemeOptions: ThemeOptions = {
         root: {
           backgroundColor: '#1E1E1E',
           backgroundImage: 'none',
+          boxShadow: 'none',
+        },
+        elevation0: {
+          boxShadow: 'none',
         },
         elevation1: {
-          boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.15)',
+          boxShadow: 'none',
         },
         elevation2: {
-          boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.2)',
+          boxShadow: 'none',
         },
       },
     },
@@ -178,9 +182,10 @@ const baseThemeOptions: ThemeOptions = {
           backgroundImage: 'none',
           overflow: 'hidden',
           transition: 'all 0.2s ease-in-out',
+          boxShadow: 'none',
           '&:hover': {
             transform: 'translateY(-4px)',
-            boxShadow: '0px 8px 16px rgba(0, 0, 0, 0.3)',
+            boxShadow: 'none',
           },
         },
       },
@@ -206,7 +211,7 @@ const baseThemeOptions: ThemeOptions = {
       styleOverrides: {
         root: {
           backgroundColor: '#1A1A1A',
-          boxShadow: '0px 1px 4px rgba(0, 0, 0, 0.2)',
+          boxShadow: 'none',
         },
       },
       defaultProps: {
@@ -225,6 +230,14 @@ const baseThemeOptions: ThemeOptions = {
         },
       },
     },
+    // Ensure TextField keeps its outline
+    MuiOutlinedInput: {
+      styleOverrides: {
+        root: {
+          // Keep the outline for text inputs
+        }
+      }
+    }
   },
 };
 

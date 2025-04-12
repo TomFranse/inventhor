@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { Box, BoxProps, Skeleton } from '@mui/material';
+import { Box, BoxProps, Skeleton, useTheme } from '@mui/material';
 
 // Keep track of loaded images across all instances
 const loadedImages = new Set<string>();
@@ -34,6 +34,7 @@ export const FadeInImage: React.FC<FadeInImageProps> = ({
   sx,
   ...boxProps
 }) => {
+  const theme = useTheme();
   const [imageLoaded, setImageLoaded] = useState(() => src ? loadedImages.has(src) : false);
   const [isLoading, setIsLoading] = useState(() => src ? !loadedImages.has(src) : false);
   const [currentSrc, setCurrentSrc] = useState<string | undefined>(src);
@@ -138,7 +139,7 @@ export const FadeInImage: React.FC<FadeInImageProps> = ({
         width: containerWidth || '100%',
         height: containerHeight || (aspectRatio ? 0 : '100%'),
         paddingTop: aspectRatio ? `${(1 / aspectRatio) * 100}%` : undefined,
-        bgcolor: '#616166',
+        bgcolor: theme.palette.background.paper,
         overflow: 'hidden',
         ...sx
       }}
@@ -154,7 +155,7 @@ export const FadeInImage: React.FC<FadeInImageProps> = ({
             position: aspectRatio ? 'absolute' : 'relative',
             top: 0,
             left: 0,
-            bgcolor: '#616166',
+            bgcolor: theme.palette.background.paper,
             '&::after': {
               background: 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent)',
             },
