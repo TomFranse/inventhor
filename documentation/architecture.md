@@ -17,7 +17,9 @@ inventhor/
 │   ├── components/     # Reusable React components
 │   │   ├── Header.tsx  # Application header component
 │   │   ├── ChatComponent.tsx # Custom AI chat implementation with direct OpenAI API integration
-│   │   └── UserInstructionsForm.tsx # Form for custom AI instructions
+│   │   ├── UserInstructionsForm.tsx # Form for custom AI instructions
+│   │   ├── Card.tsx    # Card component for displaying content in a grid layout
+│   │   └── FadeInImage.tsx # Component for smooth image loading with error handling
 │   ├── theme/          # MUI theme configuration
 │   ├── firebase-config.ts # Firebase configuration
 │   ├── App.tsx         # Main application component
@@ -49,6 +51,8 @@ inventhor/
 - **Database/Storage**: Firebase Firestore (optional)
 - **State Management**: React Hooks
 - **Error Handling**: Centralized with Material UI components
+- **Routing**: React Router v6
+- **Image Handling**: Custom FadeInImage component with error handling
 
 ## Key Components
 
@@ -63,6 +67,7 @@ The application structure follows a standard React+TypeScript+Vite project with 
 - Direct OpenAI API integration using fetch
 - Firebase for conversation persistence with robust error handling
 - Material UI Alert and Snackbar for user notifications and error feedback
+- React Router for client-side navigation
 
 ### AI Chat Integration
 
@@ -92,6 +97,31 @@ The application integrates a custom AI chat component at the top of the main pag
   - Temperature and token settings
   - Firebase integration for conversation persistence
   - Error handling for API communication failures
+
+### Content Cards
+
+The application includes reusable card components for displaying content:
+
+- **Card Component**: A customizable card that can be used to display various types of content
+  - Uses MUI Card as a base with enhanced functionality
+  - Features:
+    - Responsive design that works in grid layouts
+    - Image support with smooth loading
+    - Title and subtitle with automatic text truncation
+    - Active/inactive states with visual indicators
+    - Hover effects for better user interaction
+    - React Router integration for navigation
+    - Fully typed props with TypeScript
+
+- **FadeInImage Component**: A specialized image component with enhanced UX
+  - Features:
+    - Smooth fade-in effect when images load
+    - Loading skeleton while images are loading
+    - Error handling for missing or expired images
+    - Caching of loaded images for better performance
+    - Customizable aspect ratio and container dimensions
+    - Support for object-fit and object-position
+    - Optional gradient overlay
 
 ### Firebase Integration
 
