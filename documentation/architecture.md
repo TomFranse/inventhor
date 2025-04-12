@@ -21,9 +21,12 @@ inventhor/
 │   │   ├── Card.tsx    # Card component for displaying content in a grid layout
 │   │   └── FadeInImage.tsx # Component for smooth image loading with error handling
 │   ├── theme/          # MUI theme configuration
+│   │   ├── index.ts    # Theme entry point
+│   │   └── inventor_dark_theme.ts # Comprehensive dark theme with component styling
 │   ├── firebase-config.ts # Firebase configuration
 │   ├── App.tsx         # Main application component
 │   ├── main.tsx        # Application entry point
+│   ├── styles.css      # Consolidated global styles
 │   └── vite-env.d.ts   # TypeScript declarations for Vite
 ├── node_modules/       # Dependencies (git-ignored)
 ├── .env                # Environment variables (sensitive data, git-ignored)
@@ -53,6 +56,7 @@ inventhor/
 - **Error Handling**: Centralized with Material UI components
 - **Routing**: React Router v6
 - **Image Handling**: Custom FadeInImage component with error handling
+- **Styling**: MUI theme system with CSS-in-JS approach
 
 ## Key Components
 
@@ -68,6 +72,24 @@ The application structure follows a standard React+TypeScript+Vite project with 
 - Firebase for conversation persistence with robust error handling
 - Material UI Alert and Snackbar for user notifications and error feedback
 - React Router for client-side navigation
+
+### Styling System
+
+The application uses a comprehensive styling approach centered around the Material UI theme system:
+
+- **Theme Configuration**: Located in `src/theme/inventor_dark_theme.ts`, this is the central place for styling definitions
+- **Component Styling**: Most component styling is defined in the theme's `components` property
+- **Global Styles**: Applied through the theme's `CssBaseline` component
+- **Minimal CSS**: A small amount of supplementary CSS in `styles.css` for utility classes and global resets
+- **Consistent Design Language**: The dark theme follows a cohesive color scheme with Inventor Blue (#2979FF) as the primary color
+
+The styling system follows these principles:
+- Centralization of styles in the theme for consistent design
+- Use of MUI's sx prop for component-specific styling
+- Minimization of external CSS files and class names
+- Typed styling through TypeScript interfaces
+- Responsive design with proper breakpoints
+- Dark theme optimized for readability and aesthetics
 
 ### AI Chat Integration
 
@@ -137,7 +159,7 @@ The application can optionally use Firebase for chat conversation persistence:
 - User interface indicators show Firebase connection status
 - Robust error handling prevents crashes when Firebase is misconfigured
 
-## Environment Configuration
+### Environment Configuration
 
 The application uses environment variables for configuration:
 
@@ -147,7 +169,7 @@ The application uses environment variables for configuration:
   - `VITE_AIRTABLE_ACCESS_TOKEN`: Airtable access token
   - Includes step-by-step instructions for setting up Firebase
 
-## Error Handling
+### Error Handling
 
 The application implements a comprehensive error handling strategy:
 
@@ -159,10 +181,7 @@ The application implements a comprehensive error handling strategy:
 - **Console Logging**: Detailed error information for debugging
 - **Visual Feedback**: UI elements reflect error states
 
-## Styling
-The application uses Material UI for styling, which is based on Emotion (CSS-in-JS). The theme is customizable in the `src/theme` directory. The chat component is styled to match the overall Material UI theme.
-
-## Best Practices
+### Best Practices
 - Follow the Google TypeScript Style Guide
 - Use functional components with hooks
 - Keep components small and focused on a single responsibility
@@ -171,8 +190,10 @@ The application uses Material UI for styling, which is based on Emotion (CSS-in-
 - Secure API keys and sensitive data using environment variables
 - Implement comprehensive error handling
 - Provide clear visual feedback for user actions and system state
+- Centralize styling in the MUI theme system
+- Minimize use of CSS in separate files
 
-## Architectural Patterns
+### Architectural Patterns
 
 - **Custom Hooks**: The application leverages the useChat hook from ai-chat-base for state management and AI communication
 - **Conditional Rendering**: Used throughout the ChatComponent for loading states and empty states

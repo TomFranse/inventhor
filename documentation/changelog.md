@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.12] - 2024-06-09
+
+### Changed
+- Consolidated styling approach by enhancing the MUI theme configuration
+- Replaced multiple CSS files with a single consolidated styles.css
+- Integrated global styles into the theme's CssBaseline
+- Enhanced theme with comprehensive component style overrides
+- Simplified Card component to leverage theme styling
+- Added custom scrollbar styling for better dark theme experience
+- Improved responsive design with utility classes
+
+### Removed
+- Eliminated redundant CSS files (index.css, App.css)
+- Removed duplicate styling code from components
+
 ## [0.1.11] - 2024-06-09
 
 ### Added

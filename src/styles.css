@@ -1,0 +1,56 @@
+/* 
+ * Inventhor - Consolidated Styles
+ * 
+ * This file contains minimal global styles that complement the MUI theme.
+ * Most styling is handled by the MUI theme system in src/theme/inventor_dark_theme.ts
+ */
+
+/* Reset and global styles */
+* {
+  box-sizing: border-box;
+}
+
+body, html {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Montserrat', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #121212;
+  color: #FFFFFF;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* App-specific utility classes */
+.text-center {
+  text-align: center;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.mb-0 {
+  margin-bottom: 0;
+}
+
+.mt-0 {
+  margin-top: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .hide-on-mobile {
+    display: none;
+  }
+} 

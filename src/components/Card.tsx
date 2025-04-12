@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react';
 import { Card as MuiCard, CardContent, Typography } from '@mui/material';
-import { Theme } from '@mui/material/styles';
 import { Link } from 'react-router-dom';
 import { FadeInImage } from './FadeInImage';
 
@@ -29,27 +28,23 @@ const Card: React.FC<CardProps> = ({
     return plainText.substring(0, 150) + '...';
   }, [subtitle]);
 
-  const cardStyles = useMemo(() => ({
-    height: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-    textDecoration: 'none',
-    transition: 'all 0.2s ease-in-out',
-    opacity: isActive ? 1 : 0.6,
-    filter: isActive ? 'none' : 'grayscale(40%)',
-    '&:hover': {
-      transform: 'translateY(-4px)',
-      boxShadow: (theme: Theme) => theme.shadows[8],
-      opacity: isActive ? 1 : 0.8,
-      filter: isActive ? 'none' : 'grayscale(20%)',
-    },
-  }), [isActive]);
-
   return (
     <MuiCard
       component={Link}
       to={link}
-      sx={cardStyles}
+      sx={{
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        textDecoration: 'none',
+        opacity: isActive ? 1 : 0.6,
+        filter: isActive ? 'none' : 'grayscale(40%)',
+        '&:hover': {
+          opacity: isActive ? 1 : 0.8,
+          filter: isActive ? 'none' : 'grayscale(20%)',
+          // Let the theme handle the box-shadow and transform
+        },
+      }}
     >
       {icon && (
         <FadeInImage

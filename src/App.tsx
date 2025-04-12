@@ -5,7 +5,6 @@ import theme from './theme';
 import Header from './components/Header';
 import ChatComponent from './components/ChatComponent';
 import Card from './components/Card';
-import './App.css';
 
 // Dummy data for cards
 const cardData = [
