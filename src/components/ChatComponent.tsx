@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { 
   Box, 
   Paper, 
@@ -283,20 +283,27 @@ const ChatComponent: React.FC = () => {
     setCurrentConversationId(uuidv4());
   };
   
-  // Handle user instructions change
-  const handleInstructionsChange = (instructions: string) => {
+  // Memoize the instruction change handler to prevent unnecessary re-renders
+  const handleInstructionsChange = useCallback((instructions: string) => {
     setUserInstructions(instructions);
-  };
+  }, []);
+
+  // Memoize the UserInstructionsForm component to prevent re-renders when typing in the chat
+  const memoizedUserInstructionsForm = useMemo(() => {
+    if (!firebaseEnabled) return null;
+    
+    return (
+      <UserInstructionsForm 
+        userId={userId} 
+        onInstructionsChange={handleInstructionsChange} 
+      />
+    );
+  }, [firebaseEnabled, userId, handleInstructionsChange]);
 
   return (
-    <>
+    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '600px' }}>
       {/* User instructions form */}
-      {firebaseEnabled && (
-        <UserInstructionsForm 
-          userId={userId} 
-          onInstructionsChange={handleInstructionsChange} 
-        />
-      )}
+      {memoizedUserInstructionsForm}
 
       {/* Error banner */}
       {error && (
@@ -312,6 +319,7 @@ const ChatComponent: React.FC = () => {
           height: 400,
           display: 'flex',
           flexDirection: 'column',
+          flex: 1
         }}
       >
         {/* Menu button - aligned with theme's transparent/minimalist header style */}
@@ -520,7 +528,7 @@ const ChatComponent: React.FC = () => {
           </Button>
         </DialogActions>
       </Dialog>
-    </>
+    </Box>
   );
 };
 
