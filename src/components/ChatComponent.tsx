@@ -312,13 +312,12 @@ const ChatComponent: React.FC = () => {
           height: 400,
           display: 'flex',
           flexDirection: 'column',
-          backgroundColor: theme.palette.background.paper
         }}
       >
-        {/* Menu button */}
+        {/* Menu button - aligned with theme's transparent/minimalist header style */}
         <Box sx={{ 
           display: 'flex', 
-          justifyContent: 'flex-end', 
+          justifyContent: 'flex-end',
           p: 1
         }}>
           <IconButton 
@@ -337,8 +336,7 @@ const ChatComponent: React.FC = () => {
           padding: '16px',
           display: 'flex',
           flexDirection: 'column',
-          gap: '12px',
-          bgcolor: theme.palette.background.default
+          gap: '12px'
         }}>
           {/* Welcome message if no messages and no error */}
           {messages.length === 0 && !error && (
@@ -372,10 +370,9 @@ const ChatComponent: React.FC = () => {
                 padding: '12px 16px',
                 maxWidth: '80%',
                 alignSelf: msg.role === 'user' ? 'flex-end' : 'flex-start',
-                bgcolor: msg.role === 'user' ? theme.palette.primary.dark : theme.palette.background.paper,
-                color: msg.role === 'user' ? theme.palette.primary.contrastText : theme.palette.text.primary,
+                bgcolor: msg.role === 'user' ? 'primary.main' : 'surfaceContainerHigh',
+                color: msg.role === 'user' ? 'primary.contrastText' : 'text.primary',
                 borderRadius: '12px',
-                boxShadow: 'none',
                 borderTopRightRadius: msg.role === 'user' ? 0 : '12px',
                 borderTopLeftRadius: msg.role === 'user' ? '12px' : 0,
               }}
@@ -389,7 +386,7 @@ const ChatComponent: React.FC = () => {
                   display: 'block', 
                   mt: 0.5, 
                   textAlign: msg.role === 'user' ? 'right' : 'left',
-                  color: msg.role === 'user' ? 'rgba(255,255,255,0.8)' : theme.palette.text.secondary
+                  color: msg.role === 'user' ? 'rgba(255,255,255,0.8)' : 'text.secondary'
                 }}
               >
                 {msg.role === 'user' ? 'You' : 'AI'} • {new Date(msg.timestamp).toLocaleTimeString()}
@@ -403,9 +400,8 @@ const ChatComponent: React.FC = () => {
               padding: '12px 16px',
               maxWidth: '80%',
               alignSelf: 'flex-start',
-              bgcolor: theme.palette.background.paper,
+              bgcolor: 'surfaceContainerHigh',
               borderRadius: '12px',
-              boxShadow: 'none',
               borderTopLeftRadius: 0,
               display: 'flex',
               alignItems: 'center',
@@ -420,8 +416,7 @@ const ChatComponent: React.FC = () => {
         {/* Input area */}
         <Box sx={{ 
           display: 'flex', 
-          padding: '12px 16px',
-          bgcolor: theme.palette.background.paper
+          padding: '12px 16px'
         }}>
           <TextField
             fullWidth
