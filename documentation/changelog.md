@@ -5,6 +5,34 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.16] - 2025-04-17
+
+### Changed
+- Implemented new Inventhor Material Theme design system based on JSON configuration
+- Replaced inventor_dark_theme.ts with inventor_theme.ts for more flexible theming
+- Added support for both light and dark themes based on Material Design 3 guidelines
+- Enhanced color system with primary, secondary, and error color palettes from the JSON theme
+- Improved component styling with theme-consistent colors from the Material Theme
+- Updated typography to follow Inventhor styling guide using Montserrat font
+- Enhanced accessibility with proper contrast in both light and dark modes
+
+### Added
+- Added Inventhor-material-theme.json file with Material Design 3 color system
+- Added light and dark theme exports for future theme switching capability
+- Enhanced theme index to expose both light and dark themes
+
+### Removed
+- Removed old theme implementation in favor of Material Theme JSON approach
+
+## [0.1.15] - 2024-06-10
+
+### Changed
+- Switched Airtable integration from Tasks to Projects table
+- Updated types to match Projects table structure
+- Modified AirtableService to support Projects API
+- Updated UI to display Projects instead of Tasks
+- Added Projects-specific fallback data for API failure cases
+
 ## [0.1.14] - 2024-06-09
 
 ### Changed
@@ -186,4 +214,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Package name updated in package.json
 
 ### Removed
-- N/A 
+- N/A
+
+## [Unreleased]
+
+### Added
+- Airtable integration to fetch and display tasks
+- Types for Airtable data structures
+- AirtableService for API communication
+- Error handling for failed API requests
+- Loading state for data fetching
+- Default fallback for images that fail to load
+- Fallback data for when API requests fail 

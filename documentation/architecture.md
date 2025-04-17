@@ -1,48 +1,84 @@
-# Inventhor - Architecture Documentation
+# Application Architecture
 
 ## Overview
-This is a React application built with TypeScript and Vite. It follows the Google TypeScript Style Guide and uses Material UI for components. Inventhor is based on the mui-cursor-boilerplate repository but customized for specific needs.
 
-## Project Structure
+The Inventhor application is a React-based web application built with TypeScript, Vite, and Material UI that integrates with external services like Airtable for data storage and Firebase for chat persistence.
+
+## Directory Structure
 
 ```
 inventhor/
-├── documentation/      # Project documentation
-│   ├── architecture.md # This file
-│   ├── changelog.md    # Record of changes
-│   └── reference/      # Reference docs from original boilerplate
-├── public/             # Static assets
-├── src/                # Source code
-│   ├── assets/         # Images, fonts, and other static assets
-│   ├── components/     # Reusable React components
-│   │   ├── Header.tsx  # Application header component
-│   │   ├── ChatComponent.tsx # Custom AI chat implementation with direct OpenAI API integration
-│   │   ├── UserInstructionsForm.tsx # Form for custom AI instructions
-│   │   ├── Card.tsx    # Card component for displaying content in a grid layout
-│   │   └── FadeInImage.tsx # Component for smooth image loading with error handling
-│   ├── theme/          # MUI theme configuration
-│   │   ├── index.ts    # Theme entry point
-│   │   └── inventor_dark_theme.ts # Comprehensive dark theme with component styling
-│   ├── firebase-config.ts # Firebase configuration
-│   ├── App.tsx         # Main application component
-│   ├── main.tsx        # Application entry point
-│   ├── styles.css      # Consolidated global styles
-│   └── vite-env.d.ts   # TypeScript declarations for Vite
-├── node_modules/       # Dependencies (git-ignored)
-├── .env                # Environment variables (sensitive data, git-ignored)
-├── .env.local          # Local environment variables (git-ignored)
-├── .gitignore          # Git ignore file
-├── .prettierrc         # Prettier configuration
-├── eslint.config.js    # ESLint configuration
-├── index.html          # Main HTML entry point
-├── package.json        # Project dependencies and scripts
-├── package-lock.json   # Dependency lock file
-├── tsconfig.json       # TypeScript configuration
-├── tsconfig.app.json   # App-specific TypeScript config
-├── tsconfig.node.json  # Node-specific TypeScript config
-├── vite.config.ts      # Vite configuration
-└── README.md           # Project readme
+├── documentation/             # Project documentation
+├── public/                    # Static assets
+├── src/                       # Source code
+│   ├── assets/                # Application assets
+│   ├── components/            # React components
+│   │   ├── Card.tsx           # Card component for displaying items
+│   │   ├── ChatComponent.tsx  # AI chat functionality
+│   │   ├── FadeInImage.tsx    # Image component with fade-in effect
+│   │   ├── Header.tsx         # App header component
+│   │   └── ...
+│   ├── services/              # Service integrations
+│   │   └── airtableService.ts # Airtable API integration
+│   ├── theme/                 # Material UI theme configuration
+│   ├── types/                 # TypeScript type definitions
+│   │   └── airtable.ts        # Types for Airtable integration
+│   ├── App.tsx                # Main application component
+│   ├── firebase-config.ts     # Firebase configuration
+│   └── main.tsx               # Application entry point
+├── .env                       # Environment variables (template)
+├── .env.local                 # Local environment variables (not in version control)
+└── package.json               # Project dependencies and scripts
 ```
+
+## Core Components
+
+### App (App.tsx)
+
+The main application component that sets up:
+- React Router for navigation
+- Theme Provider for consistent styling
+- Fetches data from Airtable and renders components
+
+### Card (components/Card.tsx)
+
+A reusable card component used to display:
+- Projects from Airtable
+- Other content items
+
+### AirtableService (services/airtableService.ts)
+
+Handles all interactions with the Airtable API:
+- Authentication using API token
+- Fetching projects from the Projects table
+- Fetching tasks from the Tasks table
+- Converting Airtable data to application data models
+
+## Data Flow
+
+1. The App component initializes and renders the UI scaffold
+2. On component mount, it calls the AirtableService to fetch projects
+3. The fetched projects are transformed into CardData objects
+4. The UI rerenders with actual data from Airtable
+5. If the API request fails, fallback data is used instead
+
+## External Integrations
+
+### Airtable
+- Used for storing project and task data
+- Connected via the Airtable REST API
+- Authentication via Personal Access Token stored in environment variables
+
+### Firebase
+- Used for chat persistence
+- Authentication configured in firebase-config.ts
+
+## Environment Configuration
+
+The application uses environment variables for sensitive configuration:
+- VITE_AIRTABLE_ACCESS_TOKEN: For Airtable API authentication
+- Firebase configuration variables
+- OpenAI API configuration
 
 ## Technology Stack
 
@@ -77,19 +113,26 @@ The application structure follows a standard React+TypeScript+Vite project with 
 
 The application uses a comprehensive styling approach centered around the Material UI theme system:
 
-- **Theme Configuration**: Located in `src/theme/inventor_dark_theme.ts`, this is the central place for styling definitions
+- **Theme Configuration**: 
+  - Located in `src/theme/inventor_theme.ts` with JSON configuration in `src/theme/Inventhor-material-theme.json`
+  - The theme supports both light and dark modes based on Material Design 3 guidelines
+  - Theme configuration follows Google's Material Design system with token-based design
+  - JSON source of truth for all color tokens to maintain consistency
+  
 - **Component Styling**: Most component styling is defined in the theme's `components` property
 - **Global Styles**: Applied through the theme's `CssBaseline` component
 - **Minimal CSS**: A small amount of supplementary CSS in `styles.css` for utility classes and global resets
-- **Consistent Design Language**: The dark theme follows a cohesive color scheme with Inventor Blue (#2979FF) as the primary color
+- **Consistent Design Language**: Follows the Inventhor brand with gold (#FFD700) as the seed color for the Material Design 3 color system
 
 The styling system follows these principles:
+- Token-based design with Material Design 3 color system
 - Centralization of styles in the theme for consistent design
 - Use of MUI's sx prop for component-specific styling
 - Minimization of external CSS files and class names
 - Typed styling through TypeScript interfaces
 - Responsive design with proper breakpoints
-- Dark theme optimized for readability and aesthetics
+- Support for both light and dark themes with proper contrast ratios for accessibility
+- Theme tokens derived from the core brand seed color for harmony across the UI
 
 ### AI Chat Integration
 
@@ -144,6 +187,20 @@ The application includes reusable card components for displaying content:
     - Customizable aspect ratio and container dimensions
     - Support for object-fit and object-position
     - Optional gradient overlay
+
+### Airtable Integration
+
+The application uses Airtable for data storage and retrieval:
+
+- **airtableService.ts**: Handles all Airtable API interactions
+  - Fetches projects from the Projects table
+  - Fetches tasks from the Tasks table
+  - Maps Airtable records to application data models
+  - Handles error cases with proper messaging
+  - Supports individual record retrieval
+- The App component displays Projects from Airtable on the main page
+- Typed interfaces ensure data consistency between Airtable and the UI
+- Fallback content is provided when API requests fail
 
 ### Firebase Integration
 

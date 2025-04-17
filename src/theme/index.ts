@@ -1,3 +1,5 @@
-import theme from './inventor_dark_theme';
+import theme, { lightTheme, darkTheme } from './inventor_theme';
 
+// Export the default theme (dark) and individual themes
+export { lightTheme, darkTheme };
 export default theme; 
