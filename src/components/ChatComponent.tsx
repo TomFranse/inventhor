@@ -18,15 +18,11 @@ import {
   DialogContent,
   DialogActions,
   List,
-  ListItem,
-  useTheme
+  ListItem
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import HistoryIcon from '@mui/icons-material/History';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import DeleteIcon from '@mui/icons-material/Delete';
-import SettingsIcon from '@mui/icons-material/Settings';
-import SaveIcon from '@mui/icons-material/Save';
 import firebaseApp, { 
   db, 
   saveConversation, 
@@ -49,7 +45,6 @@ interface Message {
  * @returns A React component containing a custom chat interface
  */
 const ChatComponent: React.FC = () => {
-  const theme = useTheme();
   const [inputValue, setInputValue] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
@@ -61,7 +56,6 @@ const ChatComponent: React.FC = () => {
   
   // Menu state
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
-  const [historyAnchorEl, setHistoryAnchorEl] = useState<null | HTMLElement>(null);
   const [isHistoryDialogOpen, setIsHistoryDialogOpen] = useState(false);
   const [recentConversations, setRecentConversations] = useState<any[]>([]);
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
@@ -275,12 +269,6 @@ const ChatComponent: React.FC = () => {
       setSnackbarMessage('Error loading conversation');
       setIsSnackbarOpen(true);
     }
-  };
-  
-  // Handle creating a new chat
-  const handleNewChat = () => {
-    setMessages([]);
-    setCurrentConversationId(uuidv4());
   };
   
   // Memoize the instruction change handler to prevent unnecessary re-renders

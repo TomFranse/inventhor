@@ -12,7 +12,6 @@ import {
   limit as firestoreLimit, 
   CollectionReference,
   DocumentData,
-  Timestamp,
   serverTimestamp
 } from 'firebase/firestore';
 import { getAuth, Auth } from 'firebase/auth';

@@ -1,5 +1,4 @@
 import { createTheme, ThemeOptions } from '@mui/material/styles';
-import { deepmerge } from '@mui/utils';
 
 // Base Inventor dark theme
 const baseThemeOptions: ThemeOptions = {
